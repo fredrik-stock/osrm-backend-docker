@@ -4,10 +4,8 @@ LABEL \
   maintainer="Fredrik Stock <fredrik@eltele.no>" \
   org.opencontainers.image.title="osrm-backend" \
   org.opencontainers.image.description="Docker image for the Open Source Routing Machine (OSRM) osrm-backend. Monitors URL for new data" \
-  org.opencontainers.image.authors="Peter Evans <mail@peterevans.dev>, Fredrik Stock <fredrik@eltele.no>" \
-  org.opencontainers.image.url="https://github.com/fredrik-stock/osrm-backend-docker" \
-  org.opencontainers.image.vendor="https://peterevans.dev" \
-  org.opencontainers.image.licenses="MIT"
+  org.opencontainers.image.authors="Fredrik Stock <fredrik@eltele.no>" \
+  org.opencontainers.image.url="https://github.com/fredrik-stock/osrm-backend-docker"
 
 ENV OSRM_VERSION 5.22.0
 
