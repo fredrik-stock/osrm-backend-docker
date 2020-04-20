@@ -14,9 +14,14 @@ _sig() {
 }
 trap _sig SIGKILL SIGTERM SIGHUP SIGINT EXIT
 
+# Set all-is-well token at start
+# Will be removed if map data is updated server-side
+touch /tmp/has_fresh_data
 
 # Retrieve the PBF file
 curl -L $OSRM_PBF_URL --create-dirs -o $OSRM_DATA_PATH/$OSRM_DATA_LABEL.osm.pbf
+
+
 
 # Set the graph profile path
 OSRM_GRAPH_PROFILE_PATH="/osrm-profiles/$OSRM_GRAPH_PROFILE.lua"
@@ -29,6 +34,8 @@ if [ ! -z "$OSRM_GRAPH_PROFILE_URL" ]; then
     curl -L $OSRM_GRAPH_PROFILE_URL --create-dirs -o $OSRM_GRAPH_PROFILE_PATH
 fi
 
+printenv | grep "OSRM" >> /etc/environment
+
 # Build the graph
 osrm-extract $OSRM_DATA_PATH/$OSRM_DATA_LABEL.osm.pbf -p $OSRM_GRAPH_PROFILE_PATH
 osrm-contract $OSRM_DATA_PATH/$OSRM_DATA_LABEL.osrm
@@ -36,4 +43,6 @@ osrm-contract $OSRM_DATA_PATH/$OSRM_DATA_LABEL.osrm
 # Start serving requests
 osrm-routed $OSRM_DATA_PATH/$OSRM_DATA_LABEL.osrm --max-table-size $OSRM_MAX_TABLE_SIZE &
 child=$!
+
+cron
 wait "$child"
