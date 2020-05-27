@@ -7,6 +7,8 @@ OSRM_GRAPH_PROFILE=${OSRM_GRAPH_PROFILE:="car"}
 OSRM_GRAPH_PROFILE_URL=${OSRM_GRAPH_PROFILE_URL:=""}
 OSRM_PBF_URL=${OSRM_PBF_URL:="http://download.geofabrik.de/asia/maldives-latest.osm.pbf"}
 OSRM_MAX_TABLE_SIZE=${OSRM_MAX_TABLE_SIZE:="8000"}
+OSRM_EXTRA_PARAMS=${OSRM_EXTRA_PARAMS:=""}
+OSRM_USE_MLD=${OSRM_EXTRA_PARAMS:=""}
 
 
 _sig() {
@@ -38,10 +40,19 @@ printenv | grep "OSRM" >> /etc/environment
 
 # Build the graph
 osrm-extract $OSRM_DATA_PATH/$OSRM_DATA_LABEL.osm.pbf -p $OSRM_GRAPH_PROFILE_PATH
-osrm-contract $OSRM_DATA_PATH/$OSRM_DATA_LABEL.osrm
+
+# Use MLD
+if [ ! -z "$OSRM_USE_MLD" ]; then
+    osrm-partition berlin.osrm
+    osrm-customize berlin.osrm
+    OSRM_EXTRA_PARAMS="${OSRM_EXTRA_PARAMS} --algorithm=MLD"
+else
+    osrm-contract $OSRM_DATA_PATH/$OSRM_DATA_LABEL.osrm
+fi
+
 
 # Start serving requests
-osrm-routed $OSRM_DATA_PATH/$OSRM_DATA_LABEL.osrm --max-table-size $OSRM_MAX_TABLE_SIZE &
+osrm-routed $OSRM_DATA_PATH/$OSRM_DATA_LABEL.osrm --max-table-size $OSRM_MAX_TABLE_SIZE $OSRM_EXTRA_PARAMS &
 child=$!
 
 cron
