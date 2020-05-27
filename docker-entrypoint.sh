@@ -43,8 +43,8 @@ osrm-extract $OSRM_DATA_PATH/$OSRM_DATA_LABEL.osm.pbf -p $OSRM_GRAPH_PROFILE_PAT
 
 # Use MLD
 if [ ! -z "$OSRM_USE_MLD" ]; then
-    osrm-partition berlin.osrm
-    osrm-customize berlin.osrm
+    osrm-partition $OSRM_DATA_PATH/$OSRM_DATA_LABEL.osrm
+    osrm-customize $OSRM_DATA_PATH/$OSRM_DATA_LABEL.osrm
     OSRM_EXTRA_PARAMS="${OSRM_EXTRA_PARAMS} --algorithm=MLD"
 else
     osrm-contract $OSRM_DATA_PATH/$OSRM_DATA_LABEL.osrm
